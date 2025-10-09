@@ -16,12 +16,12 @@ def update(frame):
 ani = FuncAnimation(fig, update, frames=100, interval=10, blit=True)
 plt.show()'''
 
-A = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-print(A)
-B = np.roll(A, -1, axis=1)
-print(B)
-
+#A = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 #print(f"Divergence non nulle détectée en ({i},{j}): {div}")
-
+dt = 0.5
+n_t = 3
+test1 = np.linspace(dt, dt*n_t, n_t)
+test2 = np.arange(dt, dt*n_t + dt, dt)
+print(test1)
+print(test2)
 #print(np.arange(1, 1+3*2, 2))
-
