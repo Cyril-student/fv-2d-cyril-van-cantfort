@@ -36,7 +36,9 @@ def construction_constante(C, U, V, i, j):
 
 #Fonction de reconstruction linéaire des concentrations aux faces des volumes finis
 def construction_linéaire(C, U, V, i, j):
+    #reconstruction stable si le flux est décentré amont
     if U[i,j] > 0:
+        #décalage de C avec np.roll pour bénéficier des conditions aux limites périodiques
         c_l = np.roll(C, 1, axis=1)[i,j] + (C[i,j] - np.roll(C, 2, axis=1)[i,j]) / (2*dx) * dx/2
     else:
         c_l = C[i,j] + (np.roll(C, -1, axis=1)[i,j] - np.roll(C, 1, axis=1)[i,j]) / (2*dx) * (-dx/2)
@@ -61,8 +63,6 @@ def Euler_explicite(F_construction, C, U, V, dt, n_t, dx, dy, n_x, n_y):
     C_evolution.append(C.copy())
 
     #Vérification de la stabilité du schéma
-    max_u = np.max(np.abs(U))
-    max_v = np.max(np.abs(V))
     if dt * (max_u/dx + max_v/dy) > 1:
         print("SCHEMA INSTABLE !")
     else:
@@ -70,7 +70,7 @@ def Euler_explicite(F_construction, C, U, V, dt, n_t, dx, dy, n_x, n_y):
     
     Verif_divergence_nulle(U, V, n_x, n_y, dx, dy)
 
-    for t in np.arange(1, 1+dt*n_t, dt):
+    for t in np.arange(dt, dt*n_t, dt):
         for i in range(n_y):
             for j in range(n_x):
                 #vitesses aux faces du volume fini
@@ -106,30 +106,36 @@ def animate_concentration(C_evolution, interval=50, save=False, filename= "anima
     return anim
 
 #nombre de points selon x et y
-n_x = 50
-n_y = 50
+n_x = 10
+n_y = 10
 #pas selon x et y
 dx = 1
 dy = 1
-#nombre de pas, pas de temps
-n_t = 20
-dt = 0.5
 
 #matrice des concentrations au centre des volumes finis
 C = np.zeros((n_y, n_x))
 #matrice des vitesses aux faces verticales des volumes finis
 U = np.zeros((n_y, n_x))
 #matrice des vitesses aux faces horizontales des volumes finis
-V = np.zeros((n_y, n_x))
+V = np.ones((n_y, n_x))
+
+#nombre de courant, nombre de pas, pas de temps
+nbre_courant = 1
+n_t = 2
+max_u = np.max(np.abs(U))
+max_v = np.max(np.abs(V))
+dt = nbre_courant/(max_u/dx + max_v/dy)
+print(dt, np.linspace(0, 2, 2))
 
 #condition initiale sur la concentration
-C[int(n_y/2)-1,:] = 1
+#C[int(n_y/2)-1,:] = 1
+C[int(n_y/3)-1:int(2*n_y/3)-1,int(n_x/2)-1] = 1
 #condition initiale sur la vitesse horizontale
-#U = np.ones((n_y, n_x))
+U = np.ones((n_y, n_x))
 #condition initiale sur la vitesse verticale
-V = np.ones((n_y, n_x))
+V = np.zeros((n_y, n_x))
 
 #exécution du code
 if __name__ == "__main__":
-    C_evolution = Euler_explicite(construction_linéaire, C, U, V, dt, n_t, dx, dy, n_x, n_y)
-    animate_concentration(C_evolution, interval=100, save=False)
+    C_evolution = Euler_explicite(construction_constante, C, U, V, dt, n_t, dx, dy, n_x, n_y)
+    animate_concentration(C_evolution, interval=1000/n_t, save=False)
