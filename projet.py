@@ -191,4 +191,6 @@ if __name__ == "__main__":
     max_v = np.max(np.abs(V))
     dt = nbre_courant/(max_u/dx + max_v/dy)
 
+    #Lancement de l'exécution du code avec les fonctions choisies
     execution(n_x, n_y, C, U, V, n_t, dt, dx, dy, construction_constante, Euler_explicite, stabilite_Euler_explicite)
+
