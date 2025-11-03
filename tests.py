@@ -1,27 +1,44 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
+import time
 
 
-'''fig, ax = plt.subplots()
-matrice = np.random.rand(10, 10)
-im = ax.imshow(matrice, cmap='viridis')
+C = np.array([[0,0,1],
+              [0,0,0],
+                [1,0,1]])
 
-def update(frame):
-    # Ici, tu modifies la matrice à chaque étape
-    nouvelle_matrice = np.random.rand(10, 10)  # exemple : matrice aléatoire
-    im.set_array(nouvelle_matrice)
-    return [im]
+U, V = np.zeros((3,3)), np.zeros((3,3))
 
-ani = FuncAnimation(fig, update, frames=100, interval=10, blit=True)
-plt.show()'''
+def rotation_probleme(C, U, V, angle):
+    if angle == 90:
+        C_new = np.rot90(C)
+        U_new = np.rot90(U)
+        V_new = np.rot90(V)
+        U_new, V_new = V_new, -U_new
+    elif angle == 180:
+        C_new = np.rot90(C, 2)
+        U_new = np.rot90(U, 2)
+        V_new = np.rot90(V, 2)
+        U_new, V_new = -U_new, -V_new
+    elif angle == 270:
+        C_new = np.rot90(C, 3)
+        U_new = np.rot90(U, 3)
+        V_new = np.rot90(V, 3)
+        U_new, V_new = -V_new, U_new
+    else:
+        print("Angle de rotation non supporté. Utilisez 90, 180 ou 270 degrés.")
+        return C, U, V
+    return C_new, U_new, V_new
 
-#A = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-#print(f"Divergence non nulle détectée en ({i},{j}): {div}")
-dt = 0.5
-n_t = 3
-test1 = np.linspace(dt, dt*n_t, n_t)
-test2 = np.arange(dt, dt*n_t + dt, dt)
-print(test1)
-print(test2)
-#print(np.arange(1, 1+3*2, 2))
+print("Matrice originale C :\n", C)
+
+C_rotated, U_rotated, V_rotated = rotation_probleme(C, U, V, 90)
+
+print("Matrice C après rotation de 90 degrés :\n", C_rotated)
+
+C_rotated, U_rotated, V_rotated = rotation_probleme(C, U, V, 180)
+
+print("Matrice C après rotation de 180 degrés :\n", C_rotated)
+
+C_rotated, U_rotated, V_rotated = rotation_probleme(C, U, V, 270)
+
+print("Matrice C après rotation de 270 degrés :\n", C_rotated)
