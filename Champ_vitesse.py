@@ -179,7 +179,7 @@ def plot_champ_vitesse_rotation(X, Y, u, v):
         ax.set_aspect('equal')
         ax.set_xlabel('x')
         ax.set_ylabel('y')
-    fig.show()
+    plt.show()
 
 
 def main():
