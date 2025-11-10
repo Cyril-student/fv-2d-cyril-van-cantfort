@@ -371,3 +371,5 @@ def execution(dx, dy, C, U, V, nbre_courant, n_t, F_construction, F_schéma):
     flag_stability_checked = False
 
     return C_evolution, dt, anim
+
+
